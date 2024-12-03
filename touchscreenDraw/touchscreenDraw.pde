@@ -1,13 +1,20 @@
+// Created by Calico
+// December 3, 2024
+// For Voces at OMSI, Imagining the Future
+
 int doneButtonX, doneButtonY, clearButtonX, clearButtonY; // Button positioning
 int doneButtonSize = 100; // Button image diameter
 int clearButtonSize = 100; // Button image diameter
 PImage doneButton, clearButton; // Load button image
-int startTimer, stopTimer;
+
+int startTimer, stopTimer; // Timer to check how long it's been since someone touched the screen
+int WHITE = color(255);
 
 void setup() {
   size(1080, 1080);
   background(255);
   noCursor();
+  smooth();
   
   // Setup buttons dimensions and load images
   doneButtonX = width - 130;
@@ -22,20 +29,26 @@ void draw() {
     if(mousePressed) {
       // Check if pressing on the done button
        if( doneButtonPressed() ) {
-         println("Done Button pressed.");
-         rect(doneButtonX, doneButtonY, 100, 100);
-         rect(clearButtonX, clearButtonY, 150, 75);
-         saveFrame("submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".png");
-         reset();
+         if( isScreenBlank() ) {
+           println("Nothing has been drawn.");
+           resetBackground();
+         } else {
+           println("Done Button pressed.");
+           rect(doneButtonX, doneButtonY, 100, 100);
+           rect(clearButtonX, clearButtonY, 150, 75);
+           saveFrame("submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".png");
+           fadeBackground();
+           resetBackground();
+         }
        }
       
        // Check if pressing on the clear button
        if( clearButtonPressed() ) {
          println("Clear Button pressed.");
-         background(255);
+         resetBackground();
        }
       
-       if( abs(pmouseX - mouseX) <= 70 && abs(pmouseY - mouseY) <= 70) {
+       if( abs(pmouseX - mouseX) <= 50 && abs(pmouseY - mouseY) <= 50) {
            // If not pressing on the button, draw
            stroke(0);
            line(mouseX, mouseY, pmouseX, pmouseY);
@@ -43,10 +56,9 @@ void draw() {
        }
     }
     stopTimer = millis();
-    println("Start timer: " + startTimer);
-    println("Stop timer: " + stopTimer);
   
-    if(stopTimer - startTimer >= 2000){
+    // Switching the buttons to show or not based on if the screen has been touched in the last 1.5 seconds.
+    if(stopTimer - startTimer >= 1500){
       // Button images
       tint(255, 255);
       image(doneButton, doneButtonX, doneButtonY, 100, 100);
@@ -60,16 +72,48 @@ void draw() {
     }
 }
 
+// Check to see if the done button was pressed
 boolean doneButtonPressed() {
-  return (mouseX >= doneButtonX && mouseX <= (doneButtonX + width) && mouseY >= doneButtonY && mouseY <= (doneButtonY + height));
+  return (mouseX >= doneButtonX && mouseX <= 1025 && mouseY >= doneButtonY && mouseY <= 100);
 }
 
+// Check to see if the clear button was pressed
 boolean clearButtonPressed() {
   return (mouseX >= clearButtonX && mouseX <= 160 && mouseY >= clearButtonY && mouseY <= 100);
 }
 
-void reset() {
-  for(int i = 0; i < 256; i++){
-    background(i);
+// Reset background to white
+void resetBackground() {
+  background(255);
+}
+
+// Check if the screen has anything on it.
+boolean isScreenBlank() {
+  int whiteCount = 0;
+  loadPixels();
+  
+  for(int i = 0; i < pixels.length; i++){
+    if(pixels[i] == WHITE){
+      whiteCount++;
+    }
   }
+  
+  //println("White count is: " + whiteCount);
+  //println("Pixel length is: " + pixels.length);
+  if(whiteCount >= (pixels.length - 18000) ) {
+    updatePixels();
+    return true;
+  }
+  
+  updatePixels();
+  return false;
+}
+
+void fadeBackground() {
+  float a = alpha(pixels[0]);
+  loadPixels();
+  for(int i = 0; i < pixels.length; i++){
+    pixels[i] = color(255, 255, 255, a - 4);
+  }
+  updatePixels();
 }
