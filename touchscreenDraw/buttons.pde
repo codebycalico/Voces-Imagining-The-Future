@@ -32,6 +32,7 @@ class Button {
   void render() {
       fill(ColourButton);
       stroke(ColourText);
+      strokeWeight(4);
       rect(Pos.x, Pos.y, Width, Height);
       
       buttonFont = createFont("/data/PlusJakartaSans-Regular.ttf", 48);

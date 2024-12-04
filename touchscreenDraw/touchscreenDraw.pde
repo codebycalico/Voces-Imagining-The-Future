@@ -2,13 +2,15 @@
 // December 3, 2024
 // For Voces at OMSI, Imagining the Future
 
-int doneButtonX, doneButtonY, clearButtonX, clearButtonY; // Button positioning
-int doneButtonSize = 100; // Button image diameter
-int clearButtonSize = 100; // Button image diameter
-//PImage doneButton, clearButton; // Load button image
+import processing.net.*;
+
+Client client;
+JPGEncoder jpg;
+
 Button clearButton;
 Button submitButton;
 
+String outputName;
 PFont font;
 
 int startTimer, stopTimer; // Timer to check how long it's been since someone touched the screen
@@ -17,7 +19,17 @@ int WHITE = color(255);
 char[] submitText = {'S', 'u', 'b', 'm', 'i', 't', 't', 'i', 'n', 'g', '.', '.', '.'};
 String nothingDrawnString = "Draw a little more!";
 String submitString = "Submitting...";
-// OMSI brand colors, in order: moss agate, heliotrope, holley, darker holley, rose quartz, jasper, sardonyx, carnelian, chrysocolla, and darker chrysocolla.
+// OMSI brand colors: 
+// [0] moss agate
+// [1] heliotrope
+// [2] holley
+// [3] darker holley
+// [4] rose quartz
+// [5] jasper
+// [6] sardonyx
+// [7] carnelian
+// [8] chrysocolla
+// [9] darker chrysocolla
 color[] OMSIcolors = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), color(116, 68, 121),
                       color(237, 139, 185), color(244, 230, 107), color(246, 141, 61),
                       color(239, 56, 39), color(149, 217, 240), color(25, 125, 159) };
@@ -29,13 +41,17 @@ void setup() {
   noCursor();
   smooth();
   
+  jpg = new JPGEncoder();
+  String server = "127.0.0.1";
+  client = new Client(this, server, 5203);
+  println("Starting client...");
+  
   // Setup buttons dimensions and load images
   clearButton = new Button(0, 0, 350, 100, "RESET", OMSIcolors[8], OMSIcolors[9]);
-  submitButton = new Button( (width - 350), 0, 350, 100, "SUBMIT", OMSIcolors[3], OMSIcolors[4]);
+  submitButton = new Button( (width - 350), 0, 350, 100, "SUBMIT", OMSIcolors[4], OMSIcolors[3]);
   
   // Load OMSI font
   font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
-  
 }
 
 void draw() {
@@ -56,12 +72,14 @@ void draw() {
       } else {
         println("Submit Button pressed.");
         removeButtons();
-        saveFrame("submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".png");
+        outputName = "submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
+        saveFrame(outputName);
+        sendFrame();
         submitNotification();
       }
     }
     
-    if( abs(pmouseX - mouseX) <= 40 && abs(pmouseY - mouseY) <= 40) {
+    if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20) {
       // If not pressing on the button, draw
       stroke(0);
       line(mouseX, mouseY, pmouseX, pmouseY);
@@ -135,6 +153,26 @@ void submitNotification() {
 void removeButtons() {
   fill(255);
   noStroke();
-  rect(submitButton.Pos.x, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 10);
-  rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 10);
+  rect(submitButton.Pos.x - 10, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
+  rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 5);
+}
+
+void sendFrame() {
+  try {
+    PImage img = loadImage(outputName);
+    img.resize(500, 0);
+  
+    println("Encoding...");
+    byte[] jpgBytes = jpg.encode(img, 0.1F);
+
+    println("Writing file length to server: " + jpgBytes.length);
+    // Taken from: https://processing.org/discourse/beta/num_1192330628.html
+    client.write(jpgBytes.length / 256);
+    client.write(jpgBytes.length % 256);
+
+    println("Writing jpg bytes to server...");
+    client.write(jpgBytes);
+  } catch (IOException e) {
+    println("IOException!");
+  }
 }
