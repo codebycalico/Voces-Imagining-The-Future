@@ -7,6 +7,10 @@ int doneButtonSize = 100; // Button image diameter
 int clearButtonSize = 100; // Button image diameter
 PImage doneButton, clearButton; // Load button image
 
+float x, y, rot; // Variables to rotate and translate "animate" the drawing off the screen
+
+PFont font;
+
 int startTimer, stopTimer; // Timer to check how long it's been since someone touched the screen
 int WHITE = color(255);
 
@@ -23,6 +27,13 @@ void setup() {
   clearButtonX = 30;
   clearButtonY = 20;
   clearButton = loadImage("/data/clearButton.png");
+  
+  // Set variables for "animation"
+  x = width/2.0;
+  y = width/2.0;
+  rot = 0.0;
+  
+  font = createFont("Arial", 107);
 }
 
 void draw() {
@@ -37,8 +48,7 @@ void draw() {
            rect(doneButtonX, doneButtonY, 100, 100);
            rect(clearButtonX, clearButtonY, 150, 75);
            saveFrame("submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".png");
-           fadeBackground();
-           resetBackground();
+           submitNotification(width/2);
          }
        }
       
@@ -48,7 +58,7 @@ void draw() {
          resetBackground();
        }
       
-       if( abs(pmouseX - mouseX) <= 50 && abs(pmouseY - mouseY) <= 50) {
+       if( abs(pmouseX - mouseX) <= 40 && abs(pmouseY - mouseY) <= 40) {
            // If not pressing on the button, draw
            stroke(0);
            line(mouseX, mouseY, pmouseX, pmouseY);
@@ -74,7 +84,7 @@ void draw() {
 
 // Check to see if the done button was pressed
 boolean doneButtonPressed() {
-  return (mouseX >= doneButtonX && mouseX <= 1025 && mouseY >= doneButtonY && mouseY <= 100);
+  return (mouseX >= doneButtonX - 40 && mouseX <= 1025 && mouseY >= doneButtonY && mouseY <= 100);
 }
 
 // Check to see if the clear button was pressed
@@ -109,11 +119,14 @@ boolean isScreenBlank() {
   return false;
 }
 
-void fadeBackground() {
-  float a = alpha(pixels[0]);
-  loadPixels();
-  for(int i = 0; i < pixels.length; i++){
-    pixels[i] = color(255, 255, 255, a - 4);
+void submitNotification(int textX) {
+  if(textX > width) {
+    return;
   }
-  updatePixels();
+  
+  textFont(font, 107);
+  fill((map(textX, width/2, width, 255, 0)), 0, 0);
+  textAlign(CENTER);
+  text("Submitting...", textX, height/2);
+  submitNotification(textX+4);
 }
