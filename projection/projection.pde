@@ -1,6 +1,7 @@
 // File for projecting the drawn images
 // Created by Calico 
 // For Voces: Imagining The Future
+// Recieving images code from example https://github.com/torb-no/processing-experiments/tree/master/CamNetServer
 
 import processing.net.*;
 

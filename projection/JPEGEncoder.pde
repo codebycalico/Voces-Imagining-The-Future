@@ -1,4 +1,5 @@
 // https://github.com/torb-no/processing-experiments/blob/master/CamNetServer/JPEGEncoder.pde
+// https://github.com/torb-no/processing-experiments/tree/master
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;

@@ -1,6 +1,7 @@
 // Created by Calico
 // December 3, 2024
 // For Voces at OMSI, Imagining the Future
+// Sending drawn images code from example https://github.com/torb-no/processing-experiments/tree/master/CamNetClient
 
 import processing.net.*;
 
@@ -131,7 +132,7 @@ void nothingDrawnNotification() {
   for(int i = 0; i < nothingDrawnString.length(); i++) {
     fill(OMSIcolors[colorIndex]);
     textAlign(CENTER);
-    text(nothingDrawnString.charAt(i), charX, height/2);
+    text(nothingDrawnString.charAt(i), charX, (height/2 + random(-40, 40)));
     colorIndex = (colorIndex + 1) % OMSIcolors.length;
     charX += width / nothingDrawnString.length();
   }
@@ -144,7 +145,7 @@ void submitNotification() {
   for(int i = 0; i < submitString.length(); i++) {
     fill(OMSIcolors[colorIndex]);
     textAlign(CENTER);
-    text(submitString.charAt(i), charX, height/2);
+    text(submitString.charAt(i), charX, (height/2 + random(-40, 40)));
     colorIndex = (colorIndex + 1) % OMSIcolors.length;
     charX += width / submitString.length();
   }
