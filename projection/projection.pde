@@ -30,7 +30,7 @@ void setup() {
  
  // Load images
  for(int i = 0; i < submissions.length; i++) {
-   submissions[i] = loadImage("/C:/Users/crandall/Documents/GitHub/Voces-Imagining-The-Future/touchscreenDraw/submissions/permanentSubmissions/permanent" + i + ".jpg");
+   submissions[i] = maskWhite(loadImage("/C:/Users/crandall/Documents/GitHub/Voces-Imagining-The-Future/touchscreenDraw/submissions/permanentSubmissions/permanent" + i + ".jpg"));
  }
  
  sub0 = new Submission(random(300, 500), submissions[0]);
@@ -52,15 +52,15 @@ void draw(){
   sub3.display();
   
   checkForIncomingImage();
-  image(img, width/2, height/2);
-  if(stopTimer - startTimer < 3000) { 
-    tint(255, 255);
-    image(img, width/2, height/2);
-    stopTimer = millis();
-  }  else {
-    tint(0, 0);
-    image(img, width/2, height/2);
-  }
+  image(maskWhite(img), width/2, height/2);
+  //if(stopTimer - startTimer < 3000) { 
+  //  tint(255, 255);
+  //  image(img, width/2, height/2);
+  //  stopTimer = millis();
+  //}  else {
+  //  tint(0, 0);
+  //  image(img, width/2, height/2);
+  //}
   
   //translate(x, y);
   //rotate(rot);
@@ -102,6 +102,7 @@ void checkForIncomingImage() {
         byte[] jpgBytes = new byte[imageByteLength];
         nextClient.readBytes(jpgBytes);
         nextClient.clear();
+        startTimer = millis();
         try {
           img = jpg.decode(jpgBytes);
         } 
@@ -121,4 +122,14 @@ void checkForIncomingImage() {
 
     }
   }
+}
+
+PImage maskWhite(PImage keyLayer) {
+  PImage mask = keyLayer.copy(); //copy the image
+  mask.filter(BLUR, 2); //just throw a blur on to make it look nicer
+  mask.filter(THRESHOLD, 0.8); //anything darker than 80% white turns black, everything lighter turns white.
+  mask.filter(INVERT); //flip white/black
+  PImage result = keyLayer.copy(); //build a result
+  result.mask(mask); //apply the mask image as a mask, making the background transparent
+  return result;
 }
