@@ -1,7 +1,9 @@
 // File for projecting the drawn images
 // Created by Calico 
 // For Voces: Imagining The Future
-// Recieving images code from example https://github.com/torb-no/processing-experiments/tree/master/CamNetServer
+
+// Recieving images code from example:
+// https://github.com/torb-no/processing-experiments/tree/master/CamNetServer
 
 import processing.net.*;
 
@@ -86,11 +88,17 @@ void checkForIncomingImage() {
 }
 
 PImage maskWhite(PImage keyLayer) {
-  PImage mask = keyLayer.copy(); //copy the image
-  mask.filter(BLUR, 2); //just throw a blur on to make it look nicer
-  mask.filter(THRESHOLD, 0.8); //anything darker than 80% white turns black, everything lighter turns white.
-  mask.filter(INVERT); //flip white/black
-  PImage result = keyLayer.copy(); //build a result
-  result.mask(mask); //apply the mask image as a mask, making the background transparent
+  // Copy the image
+  PImage mask = keyLayer.copy();
+  // Just throw a blur on to make it look nicer
+  mask.filter(BLUR, 2);
+  // Anything darker than 80% white turns black, everything lighter turns white.
+  mask.filter(THRESHOLD, 0.8);
+  // Invert
+  mask.filter(INVERT);
+  // Build a result
+  PImage result = keyLayer.copy();
+  // Apply the mask image as a mask, making the background transparent
+  result.mask(mask);
   return result;
 }

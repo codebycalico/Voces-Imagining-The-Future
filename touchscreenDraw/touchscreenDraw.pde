@@ -1,7 +1,9 @@
 // Created by Calico
 // December 3, 2024
 // For Voces at OMSI, Imagining the Future
-// Sending drawn images code from example https://github.com/torb-no/processing-experiments/tree/master/CamNetClient
+
+// Sending drawn images code from example:
+// https://github.com/torb-no/processing-experiments/tree/master/CamNetClient
 
 import processing.net.*;
 
@@ -33,9 +35,10 @@ private static final String submitString = "Submitted!";
 // [7] carnelian
 // [8] chrysocolla
 // [9] darker chrysocolla
-final color[] OMSI_COLORS = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), color(116, 68, 121),
-                      color(237, 139, 185), color(244, 230, 107), color(246, 141, 61),
-                      color(239, 56, 39), color(149, 217, 240), color(25, 125, 159) };
+final color[] OMSI_COLORS = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), 
+                              color(116, 68, 121), color(237, 139, 185), color(244, 230, 107),
+                              color(246, 141, 61), color(239, 56, 39), color(149, 217, 240),
+                              color(25, 125, 159) };
 final color ONYX_COLOR = color(0, 0, 2);
 final color FLINT_COLOR = color(255);
 
@@ -86,7 +89,8 @@ void draw() {
           println("Submit Button pressed.");
           removeButtons(1);
           delay(200);
-          outputName = "submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
+          outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
+                        + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
           saveFrame(outputName);
           submitNotification();
           sendFrame();
@@ -117,7 +121,8 @@ void draw() {
     }
     startTimer = millis();
     
-    if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20 && mouseX > onyx.Width + 15 &&mouseY > clearButton.Height + 15) {
+    if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20
+         && mouseX > onyx.Width + 15 &&mouseY > clearButton.Height + 15) {
       // If not pressing a button, then draw
       if(colorPicker == 10) {
         stroke(0, 0, 2);
