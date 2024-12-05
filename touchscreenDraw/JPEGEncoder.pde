@@ -1,5 +1,6 @@
 // https://github.com/torb-no/processing-experiments/blob/master/CamNetClient/JPEGEncoder.pde
 // https://github.com/torb-no/processing-experiments/tree/master
+// Encoding jpg images into bytes and sending it to the other Processing sketch
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;

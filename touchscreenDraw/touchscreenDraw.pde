@@ -8,16 +8,18 @@ import processing.net.*;
 Client client;
 JPGEncoder jpg;
 
-Button clearButton;
-Button submitButton;
+Button clearButton, submitButton;
+Button chrys, carn, jasp, moss, onyx;
 
 String outputName;
 PFont font;
 
 int startTimer, stopTimer; // Timer to check how long it's been since someone touched the screen
 int WHITE = color(255);
+// Switches to choose the colors
+int colorPicker = 10; // 10 = onyx, 0 = moss, 5 = jasp, 7 = carn, 8 = chrys
 
-char[] submitText = {'S', 'u', 'b', 'm', 'i', 't', 't', 'i', 'n', 'g', '.', '.', '.'};
+
 String nothingDrawnString = "Draw a little more!";
 String submitString = "Submitting...";
 // OMSI brand colors: 
@@ -31,13 +33,14 @@ String submitString = "Submitting...";
 // [7] carnelian
 // [8] chrysocolla
 // [9] darker chrysocolla
+// [10] onyx
 color[] OMSIcolors = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), color(116, 68, 121),
                       color(237, 139, 185), color(244, 230, 107), color(246, 141, 61),
-                      color(239, 56, 39), color(149, 217, 240), color(25, 125, 159) };
+                      color(239, 56, 39), color(149, 217, 240), color(25, 125, 159), color(0, 0, 2) };
 int colorIndex;
 
 void setup() {
-  size(1080, 1080);
+  size(1800, 1000);
   background(255);
   noCursor();
   smooth();
@@ -48,16 +51,14 @@ void setup() {
   println("Starting client...");
   
   // Setup buttons dimensions and load images
-  clearButton = new Button(0, 0, 350, 100, "RESET", OMSIcolors[8], OMSIcolors[9]);
-  submitButton = new Button( (width - 350), 0, 350, 100, "SUBMIT", OMSIcolors[4], OMSIcolors[3]);
+  setupButtons();
   
   // Load OMSI font
   font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
 }
 
 void draw() {
-  clearButton.update();
-  submitButton.update();
+  updateButtons();
   
   if(mousePressed) {
     if(clearButton.isPressed()) {
@@ -72,29 +73,45 @@ void draw() {
         //resetBackground();
       } else {
         println("Submit Button pressed.");
-        removeButtons();
+        removeButtons(1);
         outputName = "submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
         saveFrame(outputName);
-        sendFrame();
         submitNotification();
+        sendFrame();
       }
     }
     
+    if(chrys.isPressed()) {
+      println("Chrysocolla pressed.");
+      colorPicker = 8;
+    } else if(carn.isPressed()) {
+      println("Carnelian pressed");
+      colorPicker = 7;
+    } else if(jasp.isPressed()) {
+      println("Jasper pressed.");
+      colorPicker = 5;
+    } else if(moss.isPressed()) {
+      println("Moss pressed.");
+      colorPicker = 0;
+    } else if(onyx.isPressed()) {
+      println("Onyx pressed.");
+      colorPicker = 10;
+    }
+    
     if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20) {
-      // If not pressing on the button, draw
-      stroke(0);
+      // If not pressing a button, then draw
+      stroke(OMSIcolors[colorPicker]);
       line(mouseX, mouseY, pmouseX, pmouseY);
       startTimer = millis();
     }
   }
   stopTimer = millis();
   
-  // Switching the buttons to show or not based on if the screen has been touched in the last 1.5 seconds.
-  if(stopTimer - startTimer >= 1500){
-    submitButton.render();
-    clearButton.render();
+  // Switching the buttons to show or not based on if the screen has been drawn on in the last 1.5 seconds.
+  if(stopTimer - startTimer >= 1000){
+    renderButtons();
   } else {
-    removeButtons();
+    removeButtons(colorPicker);
   }
 }
 
@@ -113,18 +130,17 @@ boolean isScreenBlank() {
       whiteCount++;
     }
   }
-  
   //println("White count is: " + whiteCount);
   //println("Pixel length is: " + pixels.length);
   if(whiteCount >= (pixels.length - 73000) ) {
     updatePixels();
     return true;
   }
-  
   updatePixels();
   return false;
 }
 
+// Notification text "Draw a little more!"
 void nothingDrawnNotification() {
   background(255);
   textFont(font);
@@ -138,26 +154,21 @@ void nothingDrawnNotification() {
   }
 }
 
+// Notification text "Submitting..."
 void submitNotification() {
   background(255);
   textFont(font);
-  int charX = 50;
+  int charX = 300;
   for(int i = 0; i < submitString.length(); i++) {
     fill(OMSIcolors[colorIndex]);
     textAlign(CENTER);
     text(submitString.charAt(i), charX, (height/2 + random(-40, 40)));
     colorIndex = (colorIndex + 1) % OMSIcolors.length;
-    charX += width / submitString.length();
+    charX += (width / submitString.length()) - 50;
   }
 }
 
-void removeButtons() {
-  fill(255);
-  noStroke();
-  rect(submitButton.Pos.x - 10, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
-  rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 5);
-}
-
+// Send the image to the other processing sketch
 void sendFrame() {
   try {
     PImage img = loadImage(outputName);

@@ -10,11 +10,11 @@ final int TIMEOUT_MILLI = 3000; // wait for image to arrive after a length recei
 Server server;
 JPGEncoder jpg;
 PImage img;
-int permanentImagesNumber = 4;
+int permanentImagesNumber = 5;
 
 PImage[] submissions = new PImage[permanentImagesNumber];
 
-Submission sub0, sub1, sub2, sub3;
+Submission sub0, sub1, sub2, sub3, sub4;
 
 int startTimer, stopTimer;
 
@@ -38,6 +38,7 @@ void setup() {
  sub1 = new Submission(random(300, 500), submissions[1]);
  sub2 = new Submission(random(300, 500), submissions[2]);
  sub3 = new Submission(random(300, 500), submissions[3]);
+ sub4 = new Submission(random(300, 500), submissions[4]);
 }
 
 void draw(){
@@ -47,10 +48,12 @@ void draw(){
   sub1.move();
   sub2.move();
   sub3.move();
+  sub4.move();
   sub0.display();
   sub1.display();
   sub2.display();
   sub3.display();
+  sub4.display();
   
   checkForIncomingImage();
   image(maskWhite(img), width/2, height/2);
@@ -116,11 +119,7 @@ void checkForIncomingImage() {
         catch (ArrayIndexOutOfBoundsException e) {
           println("ArrayIndexOutOfBoundsException in reading jpgbytes");
         }
-        finally {
-          break;
-        }
       }
-
     }
   }
 }
