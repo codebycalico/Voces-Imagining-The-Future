@@ -12,16 +12,16 @@ Button clearButton, submitButton;
 Button chrys, carn, jasp, moss, onyx;
 
 String outputName;
-PFont font;
+PFont font, buttonFont;
 
 int startTimer, stopTimer; // Timer to check how long it's been since someone touched the screen
-int WHITE = color(255);
+final int WHITE = color(255);
 // Switches to choose the colors
 int colorPicker = 10; // 10 = onyx, 0 = moss, 5 = jasp, 7 = carn, 8 = chrys
 
 
-String nothingDrawnString = "Draw a little more!";
-String submitString = "Submitting...";
+private static final String nothingDrawnString = "Clear the screen to start over!";
+private static final String submitString = "Submitted!";
 // OMSI brand colors: 
 // [0] moss agate
 // [1] heliotrope
@@ -33,11 +33,13 @@ String submitString = "Submitting...";
 // [7] carnelian
 // [8] chrysocolla
 // [9] darker chrysocolla
-// [10] onyx
-color[] OMSIcolors = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), color(116, 68, 121),
+final color[] OMSI_COLORS = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), color(116, 68, 121),
                       color(237, 139, 185), color(244, 230, 107), color(246, 141, 61),
-                      color(239, 56, 39), color(149, 217, 240), color(25, 125, 159), color(0, 0, 2) };
-int colorIndex;
+                      color(239, 56, 39), color(149, 217, 240), color(25, 125, 159) };
+final color ONYX_COLOR = color(0, 0, 2);
+final color FLINT_COLOR = color(255);
+
+int colorIndex = 0;
 
 void setup() {
   size(1800, 1000);
@@ -50,57 +52,78 @@ void setup() {
   client = new Client(this, server, 5203);
   println("Starting client...");
   
+   // Load OMSI font
+  font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
+  buttonFont = createFont("/data/PlusJakartaSans-Regular.ttf", 48);
+  
   // Setup buttons dimensions and load images
   setupButtons();
-  
-  // Load OMSI font
-  font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
+  strokeWeight(4);
+  textAlign(CENTER, CENTER);
 }
 
 void draw() {
   updateButtons();
+  createBorder();
   
   if(mousePressed) {
     if(clearButton.isPressed()) {
-      println("Clear Button pressed.");
-      resetBackground();
+      if(stopTimer - startTimer >= 1500){
+        delay(200);
+        println("Clear Button pressed.");
+        resetBackground();
+      }
     }
     
     if(submitButton.isPressed()) {
-      if( isScreenBlank() ) {
-        println("Nothing has been drawn.");
-        nothingDrawnNotification();
-        //resetBackground();
-      } else {
-        println("Submit Button pressed.");
-        removeButtons(1);
-        outputName = "submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
-        saveFrame(outputName);
-        submitNotification();
-        sendFrame();
+      if(stopTimer - startTimer >= 1500) {
+        delay(500);
+        if( isScreenBlank() ) {
+          println("Nothing has been drawn.");
+          nothingDrawnNotification();
+          //resetBackground();
+        } else {
+          println("Submit Button pressed.");
+          removeButtons(1);
+          delay(200);
+          outputName = "submissions/submission_" + random(1, 100) + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
+          saveFrame(outputName);
+          submitNotification();
+          sendFrame();
+        }
       }
     }
     
     if(chrys.isPressed()) {
+      delay(200);
       println("Chrysocolla pressed.");
       colorPicker = 8;
     } else if(carn.isPressed()) {
+      delay(200);
       println("Carnelian pressed");
       colorPicker = 7;
     } else if(jasp.isPressed()) {
+      delay(200);
       println("Jasper pressed.");
       colorPicker = 5;
     } else if(moss.isPressed()) {
+      delay(200);
       println("Moss pressed.");
       colorPicker = 0;
     } else if(onyx.isPressed()) {
+      delay(200);
       println("Onyx pressed.");
       colorPicker = 10;
     }
+    startTimer = millis();
     
-    if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20) {
+    if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20 && mouseX > onyx.Width + 15 &&mouseY > clearButton.Height + 15) {
       // If not pressing a button, then draw
-      stroke(OMSIcolors[colorPicker]);
+      if(colorPicker == 10) {
+        stroke(0, 0, 2);
+      } else {
+        stroke(OMSI_COLORS[colorPicker]);
+      }
       line(mouseX, mouseY, pmouseX, pmouseY);
       startTimer = millis();
     }
@@ -108,11 +131,18 @@ void draw() {
   stopTimer = millis();
   
   // Switching the buttons to show or not based on if the screen has been drawn on in the last 1.5 seconds.
-  if(stopTimer - startTimer >= 1000){
+  if(stopTimer - startTimer >= 1500){
     renderButtons();
   } else {
     removeButtons(colorPicker);
   }
+}
+
+// Create the border / frame
+void createBorder() {
+  stroke(ONYX_COLOR);
+  line(onyx.Width + 7, height, onyx.Width + 7, clearButton.Height + 10);
+  line(onyx.Width + 7, clearButton.Height + 10, width, submitButton.Height + 10);
 }
 
 // Reset background to white
@@ -126,7 +156,7 @@ boolean isScreenBlank() {
   loadPixels();
   
   for(int i = 0; i < pixels.length; i++){
-    if(pixels[i] == WHITE){
+    if(pixels[i] == FLINT_COLOR){
       whiteCount++;
     }
   }
@@ -144,13 +174,12 @@ boolean isScreenBlank() {
 void nothingDrawnNotification() {
   background(255);
   textFont(font);
-  int charX = 50;
+  int charX = 300;
   for(int i = 0; i < nothingDrawnString.length(); i++) {
-    fill(OMSIcolors[colorIndex]);
-    textAlign(CENTER);
-    text(nothingDrawnString.charAt(i), charX, (height/2 + random(-40, 40)));
-    colorIndex = (colorIndex + 1) % OMSIcolors.length;
-    charX += width / nothingDrawnString.length();
+    fill(OMSI_COLORS[colorIndex]);
+    text(nothingDrawnString.charAt(i), charX, (height/2 + random(-30, 30)));
+    colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
+    charX += (width / nothingDrawnString.length()) - 25;
   }
 }
 
@@ -160,10 +189,9 @@ void submitNotification() {
   textFont(font);
   int charX = 300;
   for(int i = 0; i < submitString.length(); i++) {
-    fill(OMSIcolors[colorIndex]);
-    textAlign(CENTER);
-    text(submitString.charAt(i), charX, (height/2 + random(-40, 40)));
-    colorIndex = (colorIndex + 1) % OMSIcolors.length;
+    fill(OMSI_COLORS[colorIndex]);
+    text(submitString.charAt(i), charX, (height/2 + random(-30, 30)));
+    colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
     charX += (width / submitString.length()) - 50;
   }
 }

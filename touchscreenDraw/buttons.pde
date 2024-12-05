@@ -1,7 +1,4 @@
 // Class to create rectangular buttons
-
-PFont buttonFont;
-
 class Button {
   PVector Pos = new PVector(0,0);
   float Width = 0;
@@ -34,13 +31,10 @@ class Button {
   void render() {
       fill(ColourButton);
       stroke(ColourText);
-      strokeWeight(4);
       rect(Pos.x, Pos.y, Width, Height);
       
-      buttonFont = createFont("/data/PlusJakartaSans-Regular.ttf", 48);
       fill(ColourText);
       textFont(buttonFont);
-      textAlign(CENTER, CENTER);
       text(Text, Pos.x + (Width/2), Pos.y + (Height/2));
   }
   boolean isPressed() {
@@ -49,13 +43,13 @@ class Button {
 }
 
 void setupButtons() {
-  clearButton = new Button(0, 0, 350, 100, "RESET", OMSIcolors[8], OMSIcolors[9]);
-  submitButton = new Button( (width - 350), 0, 350, 100, "SUBMIT", OMSIcolors[4], OMSIcolors[3]);
-  chrys = new Button(0, 2*(height/6) - 150, 200, 100, "", OMSIcolors[8], OMSIcolors[8]);
-  carn = new Button(0, 3*(height/6) - 150, 200, 100, "", OMSIcolors[7], OMSIcolors[7]);
-  jasp = new Button(0, 4*(height/6) - 150, 200, 100, "", OMSIcolors[5], OMSIcolors[5]);
-  moss = new Button(0, 5*(height/6) - 150, 200, 100, "", OMSIcolors[0], OMSIcolors[0]);
-  onyx = new Button(0, (height - 150), 200, 100, "", OMSIcolors[10], OMSIcolors[10]);
+  clearButton = new Button(0, 0, 700, 100, "SWIPE TO CLEAR SCREEN", OMSI_COLORS[8], OMSI_COLORS[9]);
+  submitButton = new Button( (width - 700), 0, 700, 100, "SWIPE TO SUBMIT", OMSI_COLORS[4], OMSI_COLORS[3]);
+  carn = new Button(0, 2*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[7], FLINT_COLOR);
+  jasp = new Button(0, 3*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[5], FLINT_COLOR);
+  moss = new Button(0, 4*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[0], FLINT_COLOR);
+  chrys = new Button(0, 5*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[8], FLINT_COLOR);
+  onyx = new Button(0, (height - 150), 200, 150, "TAP\nTAP", ONYX_COLOR, FLINT_COLOR);
 }
 
 void updateButtons() {
@@ -81,7 +75,7 @@ void renderButtons() {
 // White out the buttons "removing" them
 void removeButtons(int col) {
   fill(255);
-  noStroke();
+  stroke(255);
   rect(submitButton.Pos.x - 10, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
   rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 5);
   
@@ -91,6 +85,8 @@ void removeButtons(int col) {
     rect(jasp.Pos.x, jasp.Pos.y - 5, jasp.Width + 5, jasp.Height + 10);
     rect(moss.Pos.x, moss.Pos.y - 5, moss.Width + 5, moss.Height + 10);
     rect(onyx.Pos.x, onyx.Pos.y - 5, onyx.Width + 5, onyx.Height + 10);
+    line(onyx.Width + 7, height, onyx.Width + 7, clearButton.Height + 10);
+    line(onyx.Width + 7, clearButton.Height + 10, width, submitButton.Height + 10);
   } else if(col == 0){ // Moss color is chosen
     rect(chrys.Pos.x, chrys.Pos.y - 5, chrys.Width + 5, chrys.Height + 10);
     rect(carn.Pos.x, carn.Pos.y - 5, carn.Width + 5, carn.Height + 10);

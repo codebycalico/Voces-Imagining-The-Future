@@ -21,62 +21,23 @@ int startTimer, stopTimer;
 float x, y, rot; // Variables for image locations and rotations
 
 void setup() { 
- size(1080, 1080);
- background(255);
+  size(1080, 800);
+  background(255);
  
- jpg = new JPGEncoder();
- server = new Server(this, 5203);
- img = createImage(0, 0, RGB);
- println("Starting server...");
- 
- // Load images
- for(int i = 0; i < submissions.length; i++) {
-   submissions[i] = maskWhite(loadImage("/C:/Users/crandall/Documents/GitHub/Voces-Imagining-The-Future/touchscreenDraw/submissions/permanentSubmissions/permanent" + i + ".jpg"));
- }
- 
- sub0 = new Submission(random(300, 500), submissions[0]);
- sub1 = new Submission(random(300, 500), submissions[1]);
- sub2 = new Submission(random(300, 500), submissions[2]);
- sub3 = new Submission(random(300, 500), submissions[3]);
- sub4 = new Submission(random(300, 500), submissions[4]);
+  jpg = new JPGEncoder();
+  server = new Server(this, 5203);
+  img = createImage(0, 0, RGB);
+  println("Starting server...");
+
+  setupSubmissions();
 }
 
 void draw(){
   background(255);
- 
-  sub0.move();
-  sub1.move();
-  sub2.move();
-  sub3.move();
-  sub4.move();
-  sub0.display();
-  sub1.display();
-  sub2.display();
-  sub3.display();
-  sub4.display();
+  updateSubmissions();
   
   checkForIncomingImage();
   image(maskWhite(img), width/2, height/2);
-  //if(stopTimer - startTimer < 3000) { 
-  //  tint(255, 255);
-  //  image(img, width/2, height/2);
-  //  stopTimer = millis();
-  //}  else {
-  //  tint(0, 0);
-  //  image(img, width/2, height/2);
-  //}
-  
-  //translate(x, y);
-  //rotate(rot);
-  
-  //imageMode(CENTER);
-  //image(images[0], 0, 0);
-  
-  //x += 1.0;
-  //rot += 0.02;
-  //if( x > width + images[0].width) {
-  //  x = -images[0].width;
-  //}
 }
 
 void checkForIncomingImage() {

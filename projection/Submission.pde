@@ -37,3 +37,29 @@ class Submission {
     image(img, x, y, r, r);
   }
 }
+
+void setupSubmissions() {
+  // Load images
+  for(int i = 0; i < submissions.length; i++) {
+    submissions[i] = maskWhite(loadImage("/C:/Users/crandall/Documents/GitHub/Voces-Imagining-The-Future/touchscreenDraw/submissions/permanentSubmissions/permanent" + i + ".jpg"));
+  }
+ 
+  sub0 = new Submission(random(300, 500), submissions[0]);
+  sub1 = new Submission(random(300, 500), submissions[1]);
+  sub2 = new Submission(random(300, 500), submissions[2]);
+  sub3 = new Submission(random(300, 500), submissions[3]);
+  sub4 = new Submission(random(300, 500), submissions[4]);
+}
+
+void updateSubmissions() {
+  sub0.move();
+  sub1.move();
+  sub2.move();
+  sub3.move();
+  sub4.move();
+  sub0.display();
+  sub1.display();
+  sub2.display();
+  sub3.display();
+  sub4.display();
+}
