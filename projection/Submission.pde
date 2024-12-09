@@ -1,6 +1,17 @@
 // Class to control "Submissions",
 // the submitted, hand drawn images.
 
+// Variables for loading the permanent images
+// Looks in designated folder to find the number of files
+
+// IF NOT FINDING PERMAMENT SUBMISSIONS !
+// Check path first
+String path = "/C:/Users/crandall/Documents/GitHub/Voces-Imagining-The-Future/touchscreenDraw/submissions/permanentSubmissions/";
+String[] filenames = listFileNames(path);
+int IMG_NUM = filenames.length;
+PImage[] submissions = new PImage[IMG_NUM];
+Submission[] permSubs = new Submission[IMG_NUM];
+
 class Submission {
   float r;   // radius
   float x, y; // location
@@ -39,27 +50,32 @@ class Submission {
 }
 
 void setupSubmissions() {
-  // Load images
+  // Load the array of images
   for(int i = 0; i < submissions.length; i++) {
-    submissions[i] = maskWhite(loadImage("/C:/Users/crandall/Documents/GitHub/Voces-Imagining-The-Future/touchscreenDraw/submissions/permanentSubmissions/permanent" + i + ".jpg"));
+    submissions[i] = maskWhite(loadImage(path + filenames[i]));
   }
- 
-  sub0 = new Submission(random(300, 500), submissions[0]);
-  sub1 = new Submission(random(300, 500), submissions[1]);
-  sub2 = new Submission(random(300, 500), submissions[2]);
-  sub3 = new Submission(random(300, 500), submissions[3]);
-  sub4 = new Submission(random(300, 500), submissions[4]);
+  
+  // Load the array of Submission objects
+  for(int i = 0; i < permSubs.length; i++) {
+    permSubs[i] = new Submission(random(200, 400), submissions[i]);
+  }
 }
 
 void updateSubmissions() {
-  sub0.move();
-  sub1.move();
-  sub2.move();
-  sub3.move();
-  sub4.move();
-  sub0.display();
-  sub1.display();
-  sub2.display();
-  sub3.display();
-  sub4.display();
+  for(int i = 0; i < permSubs.length; i++) {
+   permSubs[i].move();
+   permSubs[i].display();
+  }
+}
+
+// This function returns all the files in a directory as an array of Strings  
+String[] listFileNames(String dir) {
+  File file = new File(dir);
+  if (file.isDirectory()) {
+    String names[] = file.list();
+    return names;
+  } else {
+    // If it's not a directory
+    return null;
+  }
 }

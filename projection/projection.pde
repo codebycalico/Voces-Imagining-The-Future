@@ -5,16 +5,19 @@
 // Recieving images code from example:
 // https://github.com/torb-no/processing-experiments/tree/master/CamNetServer
 
+// NEEDS TO BE DONE BY A HUMAN AT THE END OF EACH DAY:
+// Review the files in the submissions folder and choose appropriate ones
+// Add appropriate ones to the permanentSubmissions folder, and rename the files,
+// numbering them to match the format.
+
+import java.util.Date;
 import processing.net.*;
 final int TIMEOUT_MILLI = 3000; // wait for image to arrive after a length receiption
 
+// Variables for incoming images
 Server server;
 JPGEncoder jpg;
 PImage img;
-int permanentImagesNumber = 5;
-
-PImage[] submissions = new PImage[permanentImagesNumber];
-Submission sub0, sub1, sub2, sub3, sub4;
 
 int startTimer, stopTimer;
 
@@ -53,7 +56,6 @@ void checkForIncomingImage() {
     int startMilli = millis();
     while (true) {
       // Wait for the image...
-
       // Abort if timeout has run out
       if ((millis() - startMilli) > TIMEOUT_MILLI) {
         println("Timeout.");
