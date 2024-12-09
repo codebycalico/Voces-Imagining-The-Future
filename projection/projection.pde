@@ -6,7 +6,6 @@
 // https://github.com/torb-no/processing-experiments/tree/master/CamNetServer
 
 import processing.net.*;
-
 final int TIMEOUT_MILLI = 3000; // wait for image to arrive after a length receiption
 
 Server server;
@@ -15,7 +14,6 @@ PImage img;
 int permanentImagesNumber = 5;
 
 PImage[] submissions = new PImage[permanentImagesNumber];
-
 Submission sub0, sub1, sub2, sub3, sub4;
 
 int startTimer, stopTimer;
@@ -87,13 +85,12 @@ void checkForIncomingImage() {
   }
 }
 
+// "Delete" the white background from the drawing screenshot
 PImage maskWhite(PImage keyLayer) {
   // Copy the image
   PImage mask = keyLayer.copy();
-  // Just throw a blur on to make it look nicer
-  mask.filter(BLUR, 2);
-  // Anything darker than 80% white turns black, everything lighter turns white.
-  mask.filter(THRESHOLD, 0.8);
+  // Anything darker than purely white will show (1.0 = purely white)
+  mask.filter(THRESHOLD, 1.0);
   // Invert
   mask.filter(INVERT);
   // Build a result

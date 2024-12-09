@@ -69,7 +69,9 @@ void draw() {
   updateButtons();
   createBorder();
   
+  // If the screen is touched, first check if a button was touched
   if(mousePressed) {
+    // Clear button was pressed, just clear the screen
     if(clearButton.isPressed()) {
       if(stopTimer - startTimer >= 1500){
         delay(200);
@@ -78,26 +80,26 @@ void draw() {
       }
     }
     
+    // Submit button was pressed
+    // Delay so it can't be spammed
+    // Remove the buttons from the screen to take a screenshot
+    // Save the drawing
+    // Send the image to the projection
     if(submitButton.isPressed()) {
       if(stopTimer - startTimer >= 1500) {
         delay(500);
-        if( isScreenBlank() ) {
-          println("Nothing has been drawn.");
-          nothingDrawnNotification();
-          //resetBackground();
-        } else {
-          println("Submit Button pressed.");
-          removeButtons(1);
-          delay(200);
-          outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
-                        + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
-          saveFrame(outputName);
-          submitNotification();
-          sendFrame();
-        }
+        println("Submit Button pressed.");
+        removeButtons(1);
+        delay(200);
+        outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
+                      + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
+        saveFrame(outputName);
+        submitNotification();
+        sendFrame();
       }
     }
     
+    // Check if a color was pressed to change the drawing color
     if(chrys.isPressed()) {
       delay(200);
       println("Chrysocolla pressed.");
@@ -121,9 +123,9 @@ void draw() {
     }
     startTimer = millis();
     
-    if( abs(pmouseX - mouseX) <= 20 && abs(pmouseY - mouseY) <= 20
+    // If no button was pressed, it's time to draw!
+    if( abs(pmouseX - mouseX) <= 30 && abs(pmouseY - mouseY) <= 30
          && mouseX > onyx.Width + 15 &&mouseY > clearButton.Height + 15) {
-      // If not pressing a button, then draw
       if(colorPicker == 10) {
         stroke(0, 0, 2);
       } else {
@@ -135,7 +137,8 @@ void draw() {
   }
   stopTimer = millis();
   
-  // Switching the buttons to show or not based on if the screen has been drawn on in the last 1.5 seconds.
+  // Switching the buttons to show or not based on 
+  // if the screen has been drawn on in the last 1.5 seconds.
   if(stopTimer - startTimer >= 1500){
     renderButtons();
   } else {
@@ -155,40 +158,42 @@ void resetBackground() {
   background(255);
 }
 
-// Check if the screen has anything on it.
-boolean isScreenBlank() {
-  int whiteCount = 0;
-  loadPixels();
+//// Check if the screen has anything on it
+//// Checking the pixels on the screen is really slow
+//// and maybe not worth it
+//boolean isScreenBlank() {
+//  int whiteCount = 0;
+//  loadPixels();
   
-  for(int i = 0; i < pixels.length; i++){
-    if(pixels[i] == FLINT_COLOR){
-      whiteCount++;
-    }
-  }
-  //println("White count is: " + whiteCount);
-  //println("Pixel length is: " + pixels.length);
-  if(whiteCount >= (pixels.length - 73000) ) {
-    updatePixels();
-    return true;
-  }
-  updatePixels();
-  return false;
-}
+//  for(int i = 0; i < pixels.length; i++){
+//    if(pixels[i] == FLINT_COLOR){
+//      whiteCount++;
+//    }
+//  }
+//  //println("White count is: " + whiteCount);
+//  //println("Pixel length is: " + pixels.length);
+//  if(whiteCount >= (pixels.length - 73000) ) {
+//    updatePixels();
+//    return true;
+//  }
+//  updatePixels();
+//  return false;
+//}
 
-// Notification text "Draw a little more!"
-void nothingDrawnNotification() {
-  background(255);
-  textFont(font);
-  int charX = 300;
-  for(int i = 0; i < nothingDrawnString.length(); i++) {
-    fill(OMSI_COLORS[colorIndex]);
-    text(nothingDrawnString.charAt(i), charX, (height/2 + random(-30, 30)));
-    colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
-    charX += (width / nothingDrawnString.length()) - 25;
-  }
-}
+//// Notification text "Draw a little more!"
+//void nothingDrawnNotification() {
+//  background(255);
+//  textFont(font);
+//  int charX = 300;
+//  for(int i = 0; i < nothingDrawnString.length(); i++) {
+//    fill(OMSI_COLORS[colorIndex]);
+//    text(nothingDrawnString.charAt(i), charX, (height/2 + random(-30, 30)));
+//    colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
+//    charX += (width / nothingDrawnString.length()) - 25;
+//  }
+//}
 
-// Notification text "Submitting..."
+// Show text "Submitting..." with a little bounce
 void submitNotification() {
   background(255);
   textFont(font);

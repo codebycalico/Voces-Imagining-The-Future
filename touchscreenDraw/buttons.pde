@@ -73,6 +73,8 @@ void renderButtons() {
 }
 
 // White out the buttons "removing" them
+// If a color button is chosen, white out all the buttons
+// except for that color
 void removeButtons(int col) {
   fill(255);
   stroke(255);
