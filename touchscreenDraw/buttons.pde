@@ -78,6 +78,9 @@ void renderButtons() {
 void removeButtons(int col) {
   fill(255);
   stroke(255);
+  strokeWeight(5);
+  line(onyx.Width + 7, height, onyx.Width + 7, clearButton.Height + 10);
+  line(onyx.Width + 7, clearButton.Height + 10, width, submitButton.Height + 10);
   rect(submitButton.Pos.x - 10, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
   rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 5);
   
