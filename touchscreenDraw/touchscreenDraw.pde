@@ -12,6 +12,7 @@ JPGEncoder jpg;
 
 Button clearButton, submitButton;
 Button chrys, carn, jasp, moss, onyx;
+Button english, spanish;
 
 String outputName;
 PFont font, buttonFont;
@@ -21,9 +22,10 @@ final int WHITE = color(255);
 // Switches to choose the colors
 int colorPicker = 10; // 10 = onyx, 0 = moss, 5 = jasp, 7 = carn, 8 = chrys
 
+private static final String submitStringEnglish = "Submitted!";
+private static final String submitStringSpanish = "Enviado!";
+boolean eng = true;
 
-private static final String nothingDrawnString = "Clear the screen to start over!";
-private static final String submitString = "Submitted!";
 // OMSI brand colors: 
 // [0] moss agate
 // [1] heliotrope
@@ -44,6 +46,10 @@ final color FLINT_COLOR = color(255);
 
 int colorIndex = 0;
 
+final static int BORDER_X = 210;
+final static int BORDER_Y = 150;
+int BORDER_WIDTH, BORDER_HEIGHT;
+
 void setup() {
   size(1800, 1000);
   background(255);
@@ -63,18 +69,37 @@ void setup() {
   setupButtons();
   strokeWeight(4);
   textAlign(CENTER, CENTER);
+  
+  BORDER_WIDTH = width - 600;
+  BORDER_HEIGHT = height - 200;
 }
 
 void draw() {
   updateButtons();
   createBorder();
+  if(eng) {
+    headerTextEnglish();
+  }
+  if(!eng){
+    headerTextSpanish();
+  }
   
   // If the screen is touched, first check if a button was touched
   if(mousePressed) {
+    // Language controller
+    if(spanish.isPressed()) {
+      resetHeader();
+      eng = false;
+    }
+    if(english.isPressed()) {
+      resetHeader();
+      eng = true;
+    }
+    
     // Clear button was pressed, just clear the screen
     if(clearButton.isPressed()) {
       if(stopTimer - startTimer >= 1500){
-        delay(200);
+        delay(100);
         println("Clear Button pressed.");
         resetBackground();
       }
@@ -87,14 +112,18 @@ void draw() {
     // Send the image to the projection
     if(submitButton.isPressed()) {
       if(stopTimer - startTimer >= 1500) {
-        delay(500);
         println("Submit Button pressed.");
         removeButtons(1);
         delay(200);
         outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
                       + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
         saveFrame(outputName);
-        submitNotification();
+        if(eng) {
+          submitNotificationEnglish();
+        }
+        if(!eng) {
+          submitNotificationSpanish();
+        }
         sendFrame();
       }
     }
@@ -125,7 +154,8 @@ void draw() {
     
     // If no button was pressed, it's time to draw!
     if( abs(pmouseX - mouseX) <= 30 && abs(pmouseY - mouseY) <= 30
-         && mouseX > onyx.Width + 15 &&mouseY > clearButton.Height + 15) {
+         && mouseX > BORDER_X && mouseX < BORDER_WIDTH
+         && mouseY > BORDER_Y && mouseY < BORDER_HEIGHT) {
       if(colorPicker == 10) {
         stroke(0, 0, 2);
       } else {
@@ -149,8 +179,10 @@ void draw() {
 // Create the border / frame
 void createBorder() {
   stroke(ONYX_COLOR);
-  line(onyx.Width + 7, height, onyx.Width + 7, clearButton.Height + 10);
-  line(onyx.Width + 7, clearButton.Height + 10, width, submitButton.Height + 10);
+  line(BORDER_X, BORDER_Y, (BORDER_X + BORDER_WIDTH), BORDER_Y);
+  line(BORDER_X, BORDER_Y, BORDER_X, (BORDER_Y + BORDER_HEIGHT));
+  line(BORDER_X, (BORDER_Y + BORDER_HEIGHT), (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
+  line((BORDER_X + BORDER_WIDTH), BORDER_Y, (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
 }
 
 // Reset background to white
@@ -158,51 +190,47 @@ void resetBackground() {
   background(255);
 }
 
-//// Check if the screen has anything on it
-//// Checking the pixels on the screen is really slow
-//// and maybe not worth it
-//boolean isScreenBlank() {
-//  int whiteCount = 0;
-//  loadPixels();
-  
-//  for(int i = 0; i < pixels.length; i++){
-//    if(pixels[i] == FLINT_COLOR){
-//      whiteCount++;
-//    }
-//  }
-//  //println("White count is: " + whiteCount);
-//  //println("Pixel length is: " + pixels.length);
-//  if(whiteCount >= (pixels.length - 73000) ) {
-//    updatePixels();
-//    return true;
-//  }
-//  updatePixels();
-//  return false;
-//}
+void resetHeader() {
+  stroke(255);
+  fill(255);
+  rect(0, 0, width, BORDER_X - 50);
+}
 
-//// Notification text "Draw a little more!"
-//void nothingDrawnNotification() {
-//  background(255);
-//  textFont(font);
-//  int charX = 300;
-//  for(int i = 0; i < nothingDrawnString.length(); i++) {
-//    fill(OMSI_COLORS[colorIndex]);
-//    text(nothingDrawnString.charAt(i), charX, (height/2 + random(-30, 30)));
-//    colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
-//    charX += (width / nothingDrawnString.length()) - 25;
-//  }
-//}
+void headerTextEnglish() {
+  stroke(ONYX_COLOR);
+  textFont(buttonFont, 70);
+  text("What is your hope for the future of our planet?", width/2, 80);
+}
+
+void headerTextSpanish() {
+  stroke(ONYX_COLOR);
+  textFont(buttonFont, 70);
+  text("Que es tu esperanzo para la futura del mundo de nosotros?", width/2, 80);
+}
 
 // Show text "Submitting..." with a little bounce
-void submitNotification() {
+void submitNotificationEnglish() {
   background(255);
   textFont(font);
   int charX = 300;
-  for(int i = 0; i < submitString.length(); i++) {
+  for(int i = 0; i < submitStringEnglish.length(); i++) {
     fill(OMSI_COLORS[colorIndex]);
-    text(submitString.charAt(i), charX, (height/2 + random(-30, 30)));
+    text(submitStringEnglish.charAt(i), charX, (height/2 + random(-30, 30)));
     colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
-    charX += (width / submitString.length()) - 50;
+    charX += (width / submitStringEnglish.length()) - 50;
+  }
+}
+
+// Show text "Submitting..." with a little bounce
+void submitNotificationSpanish() {
+  background(255);
+  textFont(font);
+  int charX = 300;
+  for(int i = 0; i < submitStringSpanish.length(); i++) {
+    fill(OMSI_COLORS[colorIndex]);
+    text(submitStringSpanish.charAt(i), charX, (height/2 + random(-30, 30)));
+    colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
+    charX += (width / submitStringSpanish.length()) - 50;
   }
 }
 

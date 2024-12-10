@@ -7,9 +7,10 @@ class Button {
   color ColourText;
   String Text;
   Boolean Pressed = false;
+  int FontSize;
   
   // Button constructor
-  Button(int x, int y, int w, int h, String t, color colButton, color colText) {
+  Button(int x, int y, int w, int h, String t, color colButton, color colText, int fontsz) {
     Pos.x = x;
     Pos.y = y;
     Width = w;
@@ -17,6 +18,7 @@ class Button {
     ColourButton = colButton;
     ColourText = colText;
     Text = t;
+    FontSize = fontsz;
   }
   
   // Must be placed in draw() to work 
@@ -34,7 +36,7 @@ class Button {
       rect(Pos.x, Pos.y, Width, Height);
       
       fill(ColourText);
-      textFont(buttonFont);
+      textFont(buttonFont, FontSize);
       text(Text, Pos.x + (Width/2), Pos.y + (Height/2));
   }
   boolean isPressed() {
@@ -43,13 +45,15 @@ class Button {
 }
 
 void setupButtons() {
-  clearButton = new Button(0, 0, 700, 100, "SWIPE TO CLEAR SCREEN", OMSI_COLORS[8], OMSI_COLORS[9]);
-  submitButton = new Button( (width - 700), 0, 700, 100, "SWIPE TO SUBMIT", OMSI_COLORS[4], OMSI_COLORS[3]);
-  carn = new Button(0, 2*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[7], FLINT_COLOR);
-  jasp = new Button(0, 3*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[5], FLINT_COLOR);
-  moss = new Button(0, 4*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[0], FLINT_COLOR);
-  chrys = new Button(0, 5*(height/6) - 150, 200, 150, "TAP\nTAP", OMSI_COLORS[8], FLINT_COLOR);
-  onyx = new Button(0, (height - 150), 200, 150, "TAP\nTAP", ONYX_COLOR, FLINT_COLOR);
+  clearButton = new Button((width - 375), 150, 350, 200, "SWIPE TO\nCLEAR\nSCREEN", OMSI_COLORS[8], OMSI_COLORS[9], 40);
+  submitButton = new Button( (width - 375), 400, 350, 200, "SWIPE TO\nSUBMIT", OMSI_COLORS[4], OMSI_COLORS[3], 40);
+  onyx = new Button(0, 2*(height/6) - 190, 200, 150, "TAP\nTAP", ONYX_COLOR, FLINT_COLOR, 40);
+  carn = new Button(0, 3*(height/6) - 190, 200, 150, "TAP\nTAP", OMSI_COLORS[7], FLINT_COLOR, 40);
+  jasp = new Button(0, 4*(height/6) - 190, 200, 150, "TAP\nTAP", OMSI_COLORS[5], FLINT_COLOR, 40);
+  moss = new Button(0, 5*(height/6) - 190, 200, 150, "TAP\nTAP", OMSI_COLORS[0], FLINT_COLOR, 40);
+  chrys = new Button(0, (height - 190), 200, 150, "TAP\nTAP", OMSI_COLORS[8], FLINT_COLOR, 40);
+  english = new Button(width - 375, height - 275, 300, 75, "ENGLISH", FLINT_COLOR, ONYX_COLOR, 30);
+  spanish = new Button(width - 374, height - 175, 300, 75, "ESPANOL", FLINT_COLOR, ONYX_COLOR, 30);
 }
 
 void updateButtons() {
@@ -60,6 +64,8 @@ void updateButtons() {
   jasp.update();
   moss.update();
   onyx.update();
+  english.update();
+  spanish.update();
 }
 
 void renderButtons() {
@@ -70,6 +76,8 @@ void renderButtons() {
   jasp.render();
   moss.render();
   onyx.render();
+  english.render();
+  spanish.render();
 }
 
 // White out the buttons "removing" them
@@ -79,10 +87,14 @@ void removeButtons(int col) {
   fill(255);
   stroke(255);
   strokeWeight(5);
-  line(onyx.Width + 7, height, onyx.Width + 7, clearButton.Height + 10);
-  line(onyx.Width + 7, clearButton.Height + 10, width, submitButton.Height + 10);
+  line(BORDER_X, BORDER_Y, (BORDER_X + BORDER_WIDTH), BORDER_Y);
+  line(BORDER_X, BORDER_Y, BORDER_X, (BORDER_Y + BORDER_HEIGHT));
+  line(BORDER_X, (BORDER_Y + BORDER_HEIGHT), (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
+  line((BORDER_X + BORDER_WIDTH), BORDER_Y, (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
   rect(submitButton.Pos.x - 10, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
   rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 5);
+  rect(english.Pos.x, english.Pos.y, english.Width, english.Height);
+  rect(spanish.Pos.x, spanish.Pos.y, spanish.Width, spanish.Height);
   
   if(col == 1) { // Clearing the screen to submit image
     rect(chrys.Pos.x, chrys.Pos.y - 5, chrys.Width + 5, chrys.Height + 10);
