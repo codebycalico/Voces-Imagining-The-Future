@@ -36,10 +36,11 @@ boolean submitted = false;
 // [7] carnelian
 // [8] chrysocolla
 // [9] darker chrysocolla
+// [10] sardonyx
 final color[] OMSI_COLORS = { color(0, 144, 102), color(49, 52, 19), color(199, 162, 204), 
                               color(116, 68, 121), color(237, 139, 185), color(244, 230, 107),
                               color(246, 141, 61), color(239, 56, 39), color(149, 217, 240),
-                              color(25, 125, 159) };
+                              color(25, 125, 159), color(246, 141, 61) };
 final color ONYX_COLOR = color(0, 0, 2);
 final color FLINT_COLOR = color(255);
 
