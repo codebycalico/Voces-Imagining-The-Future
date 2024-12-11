@@ -26,6 +26,8 @@ private static final String submitStringEnglish = "Submitted!";
 private static final String submitStringSpanish = "Enviado!";
 boolean eng = true;
 
+boolean submitted = false;
+
 // OMSI brand colors: 
 // [0] moss agate
 // [1] heliotrope
@@ -53,7 +55,7 @@ int BORDER_WIDTH, BORDER_HEIGHT;
 void setup() {
   size(1800, 1000);
   background(255);
-  noCursor();
+  //noCursor();
   smooth();
   
   jpg = new JPGEncoder();
@@ -125,6 +127,7 @@ void draw() {
           submitNotificationSpanish();
         }
         sendFrame();
+        submitted = true;
       }
     }
     
@@ -152,7 +155,8 @@ void draw() {
     }
     startTimer = millis();
     
-    // If no button was pressed, it's time to draw!
+    // If no button was pressed, it's time to draw
+    //mouseDragged(colorPicker);
     if( abs(pmouseX - mouseX) <= 30 && abs(pmouseY - mouseY) <= 30
          && mouseX > BORDER_X && mouseX < BORDER_WIDTH
          && mouseY > BORDER_Y && mouseY < BORDER_HEIGHT) {
@@ -170,6 +174,10 @@ void draw() {
   // Switching the buttons to show or not based on 
   // if the screen has been drawn on in the last 1.5 seconds.
   if(stopTimer - startTimer >= 1500){
+    if(submitted) {
+      resetBackground();
+      submitted = false;
+    }
     renderButtons();
   } else {
     removeButtons(colorPicker);
@@ -252,5 +260,18 @@ void sendFrame() {
     client.write(jpgBytes);
   } catch (IOException e) {
     println("IOException!");
+  }
+}
+
+void mouseDragged(int col) {
+  if( abs(pmouseX - mouseX) <= 30 && abs(pmouseY - mouseY) <= 30
+       && mouseX > BORDER_X && mouseX < BORDER_WIDTH
+       && mouseY > BORDER_Y && mouseY < BORDER_HEIGHT) {
+    if(colorPicker == 10) {
+      stroke(0, 0, 2);
+     } else {
+       stroke(OMSI_COLORS[colorPicker]);
+     }
+     line(mouseX, mouseY, pmouseX, pmouseY);
   }
 }
