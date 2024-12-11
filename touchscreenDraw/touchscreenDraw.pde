@@ -184,6 +184,12 @@ void createBorder() {
   line(BORDER_X, BORDER_Y, BORDER_X, (BORDER_Y + BORDER_HEIGHT));
   line(BORDER_X, (BORDER_Y + BORDER_HEIGHT), (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
   line((BORDER_X + BORDER_WIDTH), BORDER_Y, (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
+  noStroke();
+  fill(OMSI_COLORS[8]);
+  rect(0, 0, width, BORDER_Y);
+  rect(0, 0, BORDER_X, height);
+  rect(0, (BORDER_Y + BORDER_HEIGHT), width, height);
+  rect( (BORDER_X + BORDER_WIDTH), BORDER_Y, width, height);
 }
 
 // White out the header for when the language is changed

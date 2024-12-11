@@ -40,7 +40,7 @@ class Button {
     if(strke) {
       stroke(ColourText);
     } else {
-      stroke(255);
+      stroke(OMSI_COLORS[8]);
     }
     rect(Pos.x, Pos.y, Width, Height);
     
@@ -64,15 +64,15 @@ void setupButtons() {
   if(eng) {
     english = new Button( (width - 340), (height - 200), 300, 75, "ENGLISH", OMSI_COLORS[5], ONYX_COLOR, 30);
     spanish = new Button( (width - 340), (height - 125), 300, 75, "ESPAÑOL", FLINT_COLOR, ONYX_COLOR, 30);
-    clearButton = new Button( (width - 375), 150, 350, 200, "CLEAR\nSCREEN", OMSI_COLORS[8], OMSI_COLORS[9], 40);
+    clearButton = new Button( (width - 375), 150, 350, 200, "CLEAR\nSCREEN", FLINT_COLOR, OMSI_COLORS[9], 40);
     submitButton = new Button( (width - 375), 400, 350, 200, "SUBMIT", OMSI_COLORS[4], OMSI_COLORS[3], 40);
-    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECT\nA\nCOLOR", FLINT_COLOR, ONYX_COLOR, 30);
+    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECT\nA\nCOLOR", OMSI_COLORS[8], ONYX_COLOR, 30);
   } else {
     english = new Button( (width - 340), (height - 200), 300, 75, "ENGLISH", FLINT_COLOR, ONYX_COLOR, 30);
     spanish = new Button( (width - 340), (height - 125), 300, 75, "ESPANOL", OMSI_COLORS[5], ONYX_COLOR, 30);
-    clearButton = new Button((width - 375), 150, 350, 200, "BORRAR LA\nPANTALLA", OMSI_COLORS[8], OMSI_COLORS[9], 40);
+    clearButton = new Button((width - 375), 150, 350, 200, "BORRAR LA\nPANTALLA", FLINT_COLOR, OMSI_COLORS[9], 40);
     submitButton = new Button( (width - 375), 400, 350, 200, "ENVIAR", OMSI_COLORS[4], OMSI_COLORS[3], 40);
-    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECCIONA\nUN\nCOLOR", FLINT_COLOR, ONYX_COLOR, 20);
+    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECCIONA\nUN\nCOLOR", OMSI_COLORS[8], ONYX_COLOR, 20);
   }
 }
 
@@ -94,11 +94,43 @@ void updateButtons() {
 void renderButtons() {
   submitButton.render(true);
   clearButton.render(true);
-  chrys.render(true);
-  carn.render(true);
-  jasp.render(true);
-  moss.render(true);
-  onyx.render(true);
+  if(colorPicker == 9) {
+    chrys.render(true);
+    carn.render(false);
+    jasp.render(false);
+    moss.render(false);
+    onyx.render(false);
+  } else if(colorPicker == 7) {
+    chrys.render(false);
+    carn.render(true);
+    jasp.render(false);
+    moss.render(false);
+    onyx.render(false);
+  } else if(colorPicker == 5) {
+    chrys.render(false);
+    carn.render(false);
+    jasp.render(true);
+    moss.render(false);
+    onyx.render(false);
+  } else if(colorPicker == 0) {
+     chrys.render(false);
+    carn.render(false);
+    jasp.render(false);
+    moss.render(true);
+    onyx.render(false);
+  } else if(colorPicker == 10) {
+    chrys.render(false);
+    carn.render(false);
+    jasp.render(false);
+    moss.render(false);
+    onyx.render(true);
+  } else {
+    chrys.render(false);
+    carn.render(false);
+    jasp.render(false);
+    moss.render(false);
+    onyx.render(false);
+  }
   english.render(true);
   spanish.render(true);
   colorSelect.render(false);
@@ -122,17 +154,18 @@ void removeButtons() {
   fill(255);
   stroke(255);
   strokeWeight(5);
+  resetHeader();
   line(BORDER_X, BORDER_Y, (BORDER_X + BORDER_WIDTH), BORDER_Y);
   line(BORDER_X, BORDER_Y, BORDER_X, (BORDER_Y + BORDER_HEIGHT));
   line(BORDER_X, (BORDER_Y + BORDER_HEIGHT), (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
   line((BORDER_X + BORDER_WIDTH), BORDER_Y, (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
-  rect(submitButton.Pos.x - 10, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
+  rect(0, (BORDER_Y - 5), (BORDER_X - 5), height);
   rect(clearButton.Pos.x, clearButton.Pos.y, clearButton.Width + 10, clearButton.Height + 5);
+  rect(submitButton.Pos.x, submitButton.Pos.y, submitButton.Width + 10, submitButton.Height + 5);
   rect(english.Pos.x, english.Pos.y, english.Width, english.Height);
   rect(spanish.Pos.x, spanish.Pos.y, spanish.Width, spanish.Height);
-  rect(chrys.Pos.x, chrys.Pos.y - 5, chrys.Width + 5, chrys.Height + 10);
-  rect(carn.Pos.x, carn.Pos.y - 5, carn.Width + 5, carn.Height + 10);
-  rect(jasp.Pos.x, jasp.Pos.y - 5, jasp.Width + 5, jasp.Height + 10);
-  rect(moss.Pos.x, moss.Pos.y - 5, moss.Width + 5, moss.Height + 10);
-  rect(onyx.Pos.x, onyx.Pos.y - 5, onyx.Width + 5, onyx.Height + 10);
+  rect(0, 0, width, BORDER_Y);
+  rect(0, 0, BORDER_X, height);
+  rect(0, (BORDER_Y + BORDER_HEIGHT), width, height);
+  rect( (BORDER_X + BORDER_WIDTH), BORDER_Y, width, height);
 }
