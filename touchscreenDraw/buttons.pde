@@ -35,9 +35,13 @@ class Button {
     }
   }
     
-  void render() {
+  void render(boolean strke) {
     fill(ColourButton);
-    stroke(ColourText);
+    if(strke) {
+      stroke(ColourText);
+    } else {
+      stroke(255);
+    }
     rect(Pos.x, Pos.y, Width, Height);
     
     fill(ColourText);
@@ -52,21 +56,23 @@ class Button {
 
 // Setup buttons based on the initial language
 void setupButtons() {
-  onyx = new Button(0, 2*(height/6) - 190, 200, 150, "", ONYX_COLOR, FLINT_COLOR, 40);
-  carn = new Button(0, 3*(height/6) - 190, 200, 150, "", OMSI_COLORS[7], FLINT_COLOR, 40);
-  jasp = new Button(0, 4*(height/6) - 190, 200, 150, "", OMSI_COLORS[5], FLINT_COLOR, 40);
-  moss = new Button(0, 5*(height/6) - 190, 200, 150, "", OMSI_COLORS[0], FLINT_COLOR, 40);
-  chrys = new Button(0, (height - 190), 200, 150, "", OMSI_COLORS[9], FLINT_COLOR, 40);
+  onyx = new Button(30, (BORDER_Y + 30), 150, 100, "", ONYX_COLOR, FLINT_COLOR, 40);
+  carn = new Button(30, (BORDER_Y + 150), 150, 100, "", OMSI_COLORS[7], FLINT_COLOR, 40);
+  jasp = new Button(30, (BORDER_Y + 270), 150, 100, "", OMSI_COLORS[5], FLINT_COLOR, 40);
+  moss = new Button(30, (BORDER_Y + 390), 150, 100, "", OMSI_COLORS[0], FLINT_COLOR, 40);
+  chrys = new Button(30, (BORDER_Y + 510), 150, 100, "", OMSI_COLORS[9], FLINT_COLOR, 40);
   if(eng) {
-    english = new Button(width - 375, height - 275, 300, 75, "ENGLISH", OMSI_COLORS[5], ONYX_COLOR, 30);
-    spanish = new Button(width - 374, height - 175, 300, 75, "ESPAÑOL", FLINT_COLOR, ONYX_COLOR, 30);
-    clearButton = new Button((width - 375), 150, 350, 200, "CLEAR\nSCREEN", OMSI_COLORS[8], OMSI_COLORS[9], 40);
+    english = new Button( (width - 340), (height - 200), 300, 75, "ENGLISH", OMSI_COLORS[5], ONYX_COLOR, 30);
+    spanish = new Button( (width - 340), (height - 125), 300, 75, "ESPAÑOL", FLINT_COLOR, ONYX_COLOR, 30);
+    clearButton = new Button( (width - 375), 150, 350, 200, "CLEAR\nSCREEN", OMSI_COLORS[8], OMSI_COLORS[9], 40);
     submitButton = new Button( (width - 375), 400, 350, 200, "SUBMIT", OMSI_COLORS[4], OMSI_COLORS[3], 40);
+    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECT\nA\nCOLOR", FLINT_COLOR, ONYX_COLOR, 30);
   } else {
-    english = new Button(width - 375, height - 275, 300, 75, "ENGLISH", FLINT_COLOR, ONYX_COLOR, 30);
-    spanish = new Button(width - 374, height - 175, 300, 75, "ESPANOL", OMSI_COLORS[5], ONYX_COLOR, 30);
+    english = new Button( (width - 340), (height - 200), 300, 75, "ENGLISH", FLINT_COLOR, ONYX_COLOR, 30);
+    spanish = new Button( (width - 340), (height - 125), 300, 75, "ESPANOL", OMSI_COLORS[5], ONYX_COLOR, 30);
     clearButton = new Button((width - 375), 150, 350, 200, "BORRAR LA\nPANTALLA", OMSI_COLORS[8], OMSI_COLORS[9], 40);
     submitButton = new Button( (width - 375), 400, 350, 200, "ENVIAR", OMSI_COLORS[4], OMSI_COLORS[3], 40);
+    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECCIONA\nUN\nCOLOR", FLINT_COLOR, ONYX_COLOR, 20);
   }
 }
 
@@ -81,29 +87,33 @@ void updateButtons() {
   onyx.update();
   english.update();
   spanish.update();
+  colorSelect.update();
 }
 
 // Render the buttons based on the language chosen
 void renderButtons() {
-  submitButton.render();
-  clearButton.render();
-  chrys.render();
-  carn.render();
-  jasp.render();
-  moss.render();
-  onyx.render();
-  english.render();
-  spanish.render();
+  submitButton.render(true);
+  clearButton.render(true);
+  chrys.render(true);
+  carn.render(true);
+  jasp.render(true);
+  moss.render(true);
+  onyx.render(true);
+  english.render(true);
+  spanish.render(true);
+  colorSelect.render(false);
   if(eng) {
     english.ColourButton = OMSI_COLORS[5];
     spanish.ColourButton = FLINT_COLOR;
     clearButton.Text = "CLEAR\nSCREEN";
     submitButton.Text = "SUBMIT";
+    colorSelect.Text = "SELECT\nA\nCOLOR";
   } else if(!eng) {
     english.ColourButton = FLINT_COLOR;
     spanish.ColourButton = OMSI_COLORS[5];
     clearButton.Text = "BORRAR LA\nPANTALLA";
     submitButton.Text = "ENVIAR";
+    colorSelect.Text = "SELECCIONA\nUN\nCOLOR";
   }
 }
 

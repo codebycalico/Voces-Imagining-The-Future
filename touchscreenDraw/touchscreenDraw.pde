@@ -14,7 +14,7 @@ String outputName;
 // Create Buttons for colors, submit / clear, and english / spanish
 Button clearButton, submitButton;
 Button chrys, carn, jasp, moss, onyx;
-Button english, spanish;
+Button english, spanish, colorSelect;
 
 PFont font, buttonFont;
 
