@@ -113,7 +113,7 @@ void renderButtons() {
     moss.render(false);
     onyx.render(false);
   } else if(colorPicker == 0) {
-     chrys.render(false);
+    chrys.render(false);
     carn.render(false);
     jasp.render(false);
     moss.render(true);
