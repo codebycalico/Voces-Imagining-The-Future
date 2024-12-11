@@ -5,27 +5,24 @@
 // Sending drawn images code from example:
 // https://github.com/torb-no/processing-experiments/tree/master/CamNetClient
 
+// Variables for saving and sending the drawing
 import processing.net.*;
-
 Client client;
 JPGEncoder jpg;
+String outputName;
 
+// Create Buttons for colors, submit / clear, and english / spanish
 Button clearButton, submitButton;
 Button chrys, carn, jasp, moss, onyx;
 Button english, spanish;
 
-String outputName;
 PFont font, buttonFont;
 
-int startTimer, stopTimer; // Timer to check how long it's been since someone touched the screen
-final int WHITE = color(255);
-// Switches to choose the colors
-int colorPicker = 10; // 10 = onyx, 0 = moss, 5 = jasp, 7 = carn, 8 = chrys
+int startTimer;
 
 private static final String submitStringEnglish = "Submitted!";
-private static final String submitStringSpanish = "Enviado!";
+private static final String submitStringSpanish = "¡Envió!";
 boolean eng = true;
-
 boolean submitted = false;
 
 // OMSI brand colors: 
@@ -47,17 +44,22 @@ final color ONYX_COLOR = color(0, 0, 2);
 final color FLINT_COLOR = color(255);
 
 int colorIndex = 0;
+// Sets the drawing color
+int colorPicker = 10;
 
+// Variables for the border
 final static int BORDER_X = 210;
 final static int BORDER_Y = 150;
 int BORDER_WIDTH, BORDER_HEIGHT;
 
 void setup() {
-  size(1800, 1000);
+  //fullScreen();
+  size(1920, 1080);
   background(255);
   //noCursor();
   smooth();
   
+  // Starting the sender
   jpg = new JPGEncoder();
   String server = "127.0.0.1";
   client = new Client(this, server, 5203);
@@ -67,11 +69,12 @@ void setup() {
   font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
   buttonFont = createFont("/data/PlusJakartaSans-Regular.ttf", 48);
   
-  // Setup buttons dimensions and load images
+  // Setup buttons
   setupButtons();
   strokeWeight(4);
   textAlign(CENTER, CENTER);
   
+  // Set the frame's borders
   BORDER_WIDTH = width - 600;
   BORDER_HEIGHT = height - 200;
 }
@@ -79,108 +82,98 @@ void setup() {
 void draw() {
   updateButtons();
   createBorder();
+  renderButtons();
+  
+  // Check the language
+  if(spanish.isPressed()) {
+     resetHeader();
+     eng = false;
+  }
+  if(english.isPressed()) {
+    resetHeader();
+    eng = true;
+  }
+  
   if(eng) {
     headerTextEnglish();
-  }
-  if(!eng){
+  } else if(!eng){
     headerTextSpanish();
   }
   
-  // If the screen is touched, first check if a button was touched
-  if(mousePressed) {
-    // Language controller
-    if(spanish.isPressed()) {
-      resetHeader();
-      eng = false;
-    }
-    if(english.isPressed()) {
-      resetHeader();
-      eng = true;
-    }
-    
-    // Clear button was pressed, just clear the screen
-    if(clearButton.isPressed()) {
-      if(stopTimer - startTimer >= 1500){
-        delay(100);
-        println("Clear Button pressed.");
-        resetBackground();
-      }
-    }
-    
-    // Submit button was pressed
-    // Delay so it can't be spammed
-    // Remove the buttons from the screen to take a screenshot
-    // Save the drawing
-    // Send the image to the projection
-    if(submitButton.isPressed()) {
-      if(stopTimer - startTimer >= 1500) {
-        println("Submit Button pressed.");
-        removeButtons(1);
-        delay(200);
-        outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
-                      + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
-        saveFrame(outputName);
-        if(eng) {
-          submitNotificationEnglish();
-        }
-        if(!eng) {
-          submitNotificationSpanish();
-        }
-        sendFrame();
-        submitted = true;
-      }
-    }
-    
-    // Check if a color was pressed to change the drawing color
-    if(chrys.isPressed()) {
-      delay(200);
-      println("Chrysocolla pressed.");
-      colorPicker = 8;
-    } else if(carn.isPressed()) {
-      delay(200);
-      println("Carnelian pressed");
-      colorPicker = 7;
-    } else if(jasp.isPressed()) {
-      delay(200);
-      println("Jasper pressed.");
-      colorPicker = 5;
-    } else if(moss.isPressed()) {
-      delay(200);
-      println("Moss pressed.");
-      colorPicker = 0;
-    } else if(onyx.isPressed()) {
-      delay(200);
-      println("Onyx pressed.");
-      colorPicker = 10;
-    }
+  // Clear button was pressed, just clear the drawing screen
+  if(clearButton.isPressed()) {
+    println("Clear Button pressed.");
+    stroke(0);
+    fill(255);
+    rect(BORDER_X, BORDER_Y, BORDER_WIDTH, BORDER_HEIGHT);
+  }
+  
+  // Save the drawing as a file, send the file to the other sketch, and play the little submit animation
+  if(submitButton.isPressed()) {
+    println("Submit Button pressed.");
+    // Reset mouseX and mouseY so it doesn't submit multiples
+    mouseX = width/2;
+    mouseY = height/2;
+    removeButtons();
+    delay(150);
+    outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
+                  + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
+    saveFrame(outputName);
+    sendFrame();
     startTimer = millis();
-    
-    // If no button was pressed, it's time to draw
-    //mouseDragged(colorPicker);
-    if( abs(pmouseX - mouseX) <= 30 && abs(pmouseY - mouseY) <= 30
-         && mouseX > BORDER_X && mouseX < BORDER_WIDTH
-         && mouseY > BORDER_Y && mouseY < BORDER_HEIGHT) {
+    submitted = true;
+  }
+  
+  // Play the submitted animation for three seconds after the submit button was pressed
+  // Then clear the screen
+  if(submitted) {
+      if(eng) {
+        submitNotificationEnglish();
+        delay(100);
+      }
+      if(!eng) {
+        submitNotificationSpanish();
+        delay(100);
+      }
+      
+      if(millis() - startTimer > 3000) {
+        submitted = false;
+        background(255);
+      }
+   }
+  
+  // Check if a color is pressed, change the drawing color
+  if(chrys.isPressed()) {
+    println("Chrysocolla pressed.");
+    colorPicker = 9;
+  } else if(carn.isPressed()) {
+    println("Carnelian pressed");
+    colorPicker = 7;
+  } else if(jasp.isPressed()) {
+    println("Jasper pressed.");
+    colorPicker = 5;
+  } else if(moss.isPressed()) {
+    println("Moss pressed.");
+    colorPicker = 0;
+  } else if(onyx.isPressed()) {
+    println("Onyx pressed.");
+    colorPicker = 10;
+  }
+  
+  // Draw on the given drawing area
+  if(mousePressed) {
+    if( abs(pmouseX - mouseX) <= 150 && abs(pmouseY - mouseY) <= 150
+         && mouseX > BORDER_X && mouseX < BORDER_X + BORDER_WIDTH
+         && mouseY > BORDER_Y && mouseY < BORDER_Y + BORDER_HEIGHT
+         && pmouseX > BORDER_X && pmouseX < BORDER_X + BORDER_WIDTH
+         && pmouseY > BORDER_Y && pmouseY < BORDER_Y + BORDER_HEIGHT) {
       if(colorPicker == 10) {
         stroke(0, 0, 2);
       } else {
         stroke(OMSI_COLORS[colorPicker]);
       }
       line(mouseX, mouseY, pmouseX, pmouseY);
-      startTimer = millis();
     }
-  }
-  stopTimer = millis();
-  
-  // Switching the buttons to show or not based on 
-  // if the screen has been drawn on in the last 1.5 seconds.
-  if(stopTimer - startTimer >= 1500){
-    if(submitted) {
-      resetBackground();
-      submitted = false;
-    }
-    renderButtons();
-  } else {
-    removeButtons(colorPicker);
   }
 }
 
@@ -193,11 +186,7 @@ void createBorder() {
   line((BORDER_X + BORDER_WIDTH), BORDER_Y, (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
 }
 
-// Reset background to white
-void resetBackground() {
-  background(255);
-}
-
+// White out the header for when the language is changed
 void resetHeader() {
   stroke(255);
   fill(255);
@@ -213,10 +202,10 @@ void headerTextEnglish() {
 void headerTextSpanish() {
   stroke(ONYX_COLOR);
   textFont(buttonFont, 70);
-  text("Que es tu esperanzo para la futura del mundo de nosotros?", width/2, 80);
+  text("¿Cuál es tu esperanza para el futuro de nuestro planeta?", width/2, 80);
 }
 
-// Show text "Submitting..." with a little bounce
+// Show text "Submitted!" with a little bounce
 void submitNotificationEnglish() {
   background(255);
   textFont(font);
@@ -225,11 +214,11 @@ void submitNotificationEnglish() {
     fill(OMSI_COLORS[colorIndex]);
     text(submitStringEnglish.charAt(i), charX, (height/2 + random(-30, 30)));
     colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
-    charX += (width / submitStringEnglish.length()) - 50;
+    charX += (width / submitStringEnglish.length()) - 60;
   }
 }
 
-// Show text "Submitting..." with a little bounce
+// Show text "¡Envió!" with a little bounce
 void submitNotificationSpanish() {
   background(255);
   textFont(font);
@@ -238,7 +227,7 @@ void submitNotificationSpanish() {
     fill(OMSI_COLORS[colorIndex]);
     text(submitStringSpanish.charAt(i), charX, (height/2 + random(-30, 30)));
     colorIndex = (colorIndex + 1) % OMSI_COLORS.length;
-    charX += (width / submitStringSpanish.length()) - 50;
+    charX += (width / submitStringSpanish.length()) - 70;
   }
 }
 
@@ -260,18 +249,5 @@ void sendFrame() {
     client.write(jpgBytes);
   } catch (IOException e) {
     println("IOException!");
-  }
-}
-
-void mouseDragged(int col) {
-  if( abs(pmouseX - mouseX) <= 30 && abs(pmouseY - mouseY) <= 30
-       && mouseX > BORDER_X && mouseX < BORDER_WIDTH
-       && mouseY > BORDER_Y && mouseY < BORDER_HEIGHT) {
-    if(colorPicker == 10) {
-      stroke(0, 0, 2);
-     } else {
-       stroke(OMSI_COLORS[colorPicker]);
-     }
-     line(mouseX, mouseY, pmouseX, pmouseY);
   }
 }
