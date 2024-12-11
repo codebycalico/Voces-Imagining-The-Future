@@ -203,13 +203,17 @@ void resetHeader() {
 void headerTextEnglish() {
   stroke(ONYX_COLOR);
   textFont(buttonFont, 70);
-  text("What is your hope for the future of our planet?", width/2, 80);
+  text("What is your hope for the future of our planet?", (BORDER_X + (BORDER_WIDTH/2)), 50);
+  textFont(buttonFont, 27);
+  text("Write or draw your message here. Then press SUBMIT to add it to the animated mural projection!", (width/2 - 150), (BORDER_Y - 30) );
 }
 
 void headerTextSpanish() {
   stroke(ONYX_COLOR);
   textFont(buttonFont, 70);
-  text("¿Cuál es tu esperanza para el futuro de nuestro planeta?", width/2, 80);
+  text("¿Cuál es tu esperanza para el futuro de nuestro planeta?", width/2, 50);
+  textFont(buttonFont, 27);
+  text("Escribe o dibuja tu mensaje en la pantalla táctil. Luego presiona ENVIAR para agregarlo a la proyección del mural animado.", (width/2 + 17), (BORDER_Y - 30) );
 }
 
 // Show text "Submitted!" with a little bounce
