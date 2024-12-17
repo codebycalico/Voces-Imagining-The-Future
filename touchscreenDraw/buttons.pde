@@ -40,7 +40,7 @@ class Button {
     if(strke) {
       stroke(ColourText);
     } else {
-      stroke(OMSI_COLORS[8]);
+      stroke(BACKGROUND);
     }
     rect(Pos.x, Pos.y, Width, Height, 28);
     
@@ -66,13 +66,13 @@ void setupButtons() {
     spanish = new Button( (width - 120), (height - 120), 100, 75, "ESPAÑOL", FLINT_COLOR, ONYX_COLOR, 15);
     clearButton = new Button( (width - 375), 175, 350, 200, "CLEAR\nSCREEN", FLINT_COLOR, OMSI_COLORS[9], 40);
     submitButton = new Button( (width - 375), 550, 350, 200, "SUBMIT", OMSI_COLORS[10], ONYX_COLOR, 40);
-    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECT\nA\nCOLOR", OMSI_COLORS[8], ONYX_COLOR, 30);
+    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECT\nA\nCOLOR", BACKGROUND, ONYX_COLOR, 30);
   } else {
     english = new Button( (width - 120), (height - 200), 100, 75, "ENGLISH", FLINT_COLOR, ONYX_COLOR, 15);
     spanish = new Button( (width - 120), (height - 120), 100, 75, "ESPANOL", OMSI_COLORS[5], ONYX_COLOR, 15);
     clearButton = new Button((width - 375), 175, 350, 200, "BORRAR LA\nPANTALLA", FLINT_COLOR, OMSI_COLORS[9], 40);
     submitButton = new Button( (width - 375), 550, 350, 200, "ENVIAR", FLINT_COLOR, OMSI_COLORS[0], 40);
-    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECCIONA\nUN\nCOLOR", OMSI_COLORS[8], ONYX_COLOR, 20);
+    colorSelect = new Button(0, (BORDER_Y + 630), (BORDER_X - 5), 250, "SELECCIONA\nUN\nCOLOR", BACKGROUND, ONYX_COLOR, 20);
   }
 }
 

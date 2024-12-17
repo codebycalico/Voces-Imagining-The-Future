@@ -23,14 +23,18 @@ int startTimer, stopTimer;
 
 float x, y, rot; // Variables for image locations and rotations
 
+Submission newSub;
+
 void setup() { 
-  size(1080, 800);
+  fullScreen();
+  //size(1080, 800);
   background(255);
  
   jpg = new JPGEncoder();
   server = new Server(this, 5203);
   img = createImage(0, 0, RGB);
-  println("Starting server...");
+  newSub = new Submission(random(200, 400), maskWhite(img));
+  println("Starting reciever...");
 
   setupSubmissions();
 }
@@ -40,7 +44,12 @@ void draw(){
   updateSubmissions();
   
   checkForIncomingImage();
-  image(maskWhite(img), width/2, height/2);
+  
+  if((millis() - startTimer < 30000)) {
+    newSub.move();
+    newSub.display();
+  }
+  //image(maskWhite(img), width/2, height/2);
 }
 
 void checkForIncomingImage() {
@@ -72,6 +81,9 @@ void checkForIncomingImage() {
         startTimer = millis();
         try {
           img = jpg.decode(jpgBytes);
+          newSub.img = maskWhite(img);
+          println("Recieved.");
+          startTimer = millis();
         } 
         catch (IOException e) {
           println("IOException in reading jpgbytes");

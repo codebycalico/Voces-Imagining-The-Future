@@ -43,6 +43,7 @@ final color[] OMSI_COLORS = { color(0, 144, 102), color(49, 52, 19), color(199, 
                               color(25, 125, 159), color(246, 141, 61) };
 final color ONYX_COLOR = color(0, 0, 2);
 final color FLINT_COLOR = color(255);
+final color BACKGROUND = color(181, 251, 255);
 
 int colorIndex = 0;
 // Sets the drawing color
@@ -54,8 +55,8 @@ final static int BORDER_Y = 150;
 int BORDER_WIDTH, BORDER_HEIGHT;
 
 void setup() {
-  //fullScreen();
-  size(1920, 1080);
+  fullScreen();
+  //size(1920, 1080);
   background(255);
   //noCursor();
   smooth();
@@ -64,7 +65,7 @@ void setup() {
   jpg = new JPGEncoder();
   String server = "127.0.0.1";
   client = new Client(this, server, 5203);
-  println("Starting client...");
+  println("Starting sender...");
   
    // Load OMSI font
   font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
@@ -116,7 +117,7 @@ void draw() {
     mouseX = width/2;
     mouseY = height/2;
     removeButtons();
-    delay(150);
+    //delay(150);
     outputName = "submissions/submission_" + random(1, 100) + month() + "_" 
                   + day() + "_" + hour() + "_" + minute() + "_" + millis() + ".jpg";
     saveFrame(outputName);
@@ -186,7 +187,7 @@ void createBorder() {
   line(BORDER_X, (BORDER_Y + BORDER_HEIGHT), (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
   line((BORDER_X + BORDER_WIDTH), BORDER_Y, (BORDER_X + BORDER_WIDTH), (BORDER_Y + BORDER_HEIGHT));
   noStroke();
-  fill(OMSI_COLORS[8]);
+  fill(BACKGROUND);
   rect(0, 0, width, BORDER_Y);
   rect(0, 0, BORDER_X, height);
   rect(0, (BORDER_Y + BORDER_HEIGHT), width, height);
@@ -258,6 +259,7 @@ void sendFrame() {
 
     println("Writing jpg bytes to server...");
     client.write(jpgBytes);
+    println("Sent.");
   } catch (IOException e) {
     println("IOException!");
   }

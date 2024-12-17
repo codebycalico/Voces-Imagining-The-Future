@@ -9,3 +9,5 @@ At the end of each day, a human will need to go through the submissions folder t
 Then the person will need to move the approved drawings into the permanentSubmissions folder and rename them to match the incrementing file names.
 
 If the files aren't loading for the projection, check the file path first to verify that the program is looking in the right folder.
+
+When starting: Projection sketch must be running before the touchscreen drawing sketch in order for the drawings to be recieved.
