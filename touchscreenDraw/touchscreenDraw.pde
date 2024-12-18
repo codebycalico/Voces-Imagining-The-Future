@@ -55,8 +55,8 @@ final static int BORDER_Y = 150;
 int BORDER_WIDTH, BORDER_HEIGHT;
 
 void setup() {
-  fullScreen();
-  //size(1920, 1080);
+  //fullScreen();
+  size(1920, 1080);
   background(255);
   //noCursor();
   smooth();
@@ -68,8 +68,8 @@ void setup() {
   println("Starting sender...");
   
    // Load OMSI font
-  font = createFont("/data/PlusJakartaSans-Bold.ttf", 107);
-  buttonFont = createFont("/data/PlusJakartaSans-Regular.ttf", 48);
+  font = createFont("/data/NotoSans-VariableFont_wdth,wght.ttf", 107);
+  buttonFont = createFont("/data/NotoSans-VariableFont_wdth,wght.ttf", 48);
   
   // Setup buttons
   setupButtons();
@@ -164,7 +164,7 @@ void draw() {
   
   // Draw on the given drawing area
   if(mousePressed) {
-    if( abs(pmouseX - mouseX) <= 150 && abs(pmouseY - mouseY) <= 150
+    if( abs(pmouseX - mouseX) <= 40 && abs(pmouseY - mouseY) <= 40
          && mouseX > BORDER_X && mouseX < BORDER_X + BORDER_WIDTH
          && mouseY > BORDER_Y && mouseY < BORDER_Y + BORDER_HEIGHT
          && pmouseX > BORDER_X && pmouseX < BORDER_X + BORDER_WIDTH
